@@ -13,6 +13,20 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8">
+                        <div class="row mb-4">
+                            <a class="btn btn-sm btn-outline-dark mr-2"
+                                href="{{ route('posts.edit', ['post' => $post->id]) }}">
+                                O'zgartirish
+                            </a>
+                            <form action="{{ route('posts.destroy', ['post' => $post->id]) }}" method="POST"
+                                onsubmit="return confirm ('Rostdan ham bu postni o\'chirasizmi?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    O'chirish
+                                </button>
+                            </form>
+                        </div>
                         <div class="mb-5">
                             <div class="d-flex mb-2">
                                 <a class="text-secondary text-uppercase font-weight-medium" href="">Admin</a>
@@ -26,7 +40,8 @@
                         </div>
 
                         <div class="mb-5">
-                            <img class="img-fluid rounded w-100 mb-4" src="{{ asset('storage/'.$post->photo) }}" alt="Image">
+                            <img class="img-fluid rounded w-100 mb-4" src="{{ asset('storage/' . $post->photo) }}"
+                                alt="Image">
                             <p>{{$post->content}}</p>
                         </div>
 
@@ -137,9 +152,11 @@
                                     <div class="d-flex flex-column pl-3">
                                         <a class="text-dark mb-2" href="">{{ $post->title }}</a>
                                         <div class="d-flex">
-                                            <small><a class="text-secondary text-uppercase font-weight-medium" href="">Admin</a></small>
+                                            <small><a class="text-secondary text-uppercase font-weight-medium"
+                                                    href="">Admin</a></small>
                                             <small class="text-primary px-2">|</small>
-                                            <small><a class="text-secondary text-uppercase font-weight-medium" href="">Cleaning</a></small>
+                                            <small><a class="text-secondary text-uppercase font-weight-medium"
+                                                    href="">Cleaning</a></small>
                                         </div>
                                     </div>
                                 </div>

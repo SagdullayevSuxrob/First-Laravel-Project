@@ -33,10 +33,10 @@ class StorePostRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|unique:posts|max:255',
+            'title' => 'required|max:255',
             'short_content' => 'required',
             'content' => 'required',
-            'photo' => 'nullable|image|min:32|max:2048',
+            'photo' => 'nullable|image|max:2048',
         ];
     }
 }
