@@ -7,36 +7,51 @@ use App\Models\Post;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StorePostRequest;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Category;
+use App\Models\Tag; 
 
 class PostController extends Controller
 {
     public function index()
-{
-    $posts = Post::latest()->paginate(3); // bazadan barcha postlar
+    {
+        $posts = Post::latest()->paginate(12); // bazadan barcha postlar
 
-    return view('posts.index')->with('posts', $posts);
+        return view('posts.index')->with('posts', $posts);
 
-}
+    }
 
-        
+
     public function create()
     {
-        return view('posts.create');
+        return view('posts.create')->with([
+            'categories' => Category::all(),
+            'tags' => Tag::all(),
+        ]);
     }
 
     public function store(StorePostRequest $request)
     {
-        if($request->hasFile('photo')){
-        $name = $request->file('photo')->getClientOriginalName();
-        $path = $request->file('photo')->storeAs('post-photos', $name);
+        // dd($request);
+
+        if ($request->hasFile('photo')) {
+            $name = $request->file('photo')->getClientOriginalName();
+            $path = $request->file('photo')->storeAs('post-photos', $name);
         }
 
         $post = Post::create([
+            'user_id' => 1,
+            'category_id' => $request->category_id,
             'title' => $request->title,
             'short_content' => $request->short_content,
             'content' => $request->content,
             'photo' => $path ?? null,
         ]);
+
+        if(isset($request->tags)){
+            foreach ($request->tags as $tag) {
+                $post->tags()->attach($tag);
+            }
+        }
 
         return redirect()->route('posts.index');
     }
@@ -45,7 +60,9 @@ class PostController extends Controller
     {
         return view('posts.show')->with([
             'post' => $post,
-            'recent_posts' => Post::latest()->get()->except($post->id)->take(5)
+            'recent_posts' => Post::latest()->get()->except($post->id)->take(5),
+            'categories' => Category::all(),
+            'tags' => Tag::all(),
         ]);
     }
 
@@ -56,9 +73,8 @@ class PostController extends Controller
 
     public function update(StorePostRequest $request, Post $post)
     {
-        if($request->hasFile('photo'))
-        {
-            if(isset($post->photo)){
+        if ($request->hasFile('photo')) {
+            if (isset($post->photo)) {
                 Storage::delete($post->photo);
             }
             $name = $request->file('photo')->getClientOriginalName();
@@ -73,15 +89,15 @@ class PostController extends Controller
             'photo' => $path ?? $post->photo,
         ]);
 
-        return redirect()->route('posts.show', ['post'=>$post->id]);
+        return redirect()->route('posts.show', ['post' => $post->id]);
     }
 
 
     public function destroy(Post $post)
     {
-        if(isset($post->photo)) {
+        if (isset($post->photo)) {
             Storage::delete($post->photo);
-        }  
+        }
 
         $post->delete();
 
