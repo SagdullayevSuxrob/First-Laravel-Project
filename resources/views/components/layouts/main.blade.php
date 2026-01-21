@@ -41,11 +41,15 @@
                     <div class="col-lg-7 text-left text-white">
                         <div class="h-100 d-inline-flex align-items-center border-right border-primary py-2 px-3">
                             <i class="fa fa-envelope text-primary mr-2"></i>
-                            <small>info@example.com</small>
+                            <small> example@gmail.com </small>
                         </div>
                         <div class="h-100 d-inline-flex align-items-center py-2 px-2">
                             <i class="fa fa-phone-alt text-primary mr-2"></i>
-                            <small>+012 345 6789</small>
+                            <small>+998 88 406 50 79</small>
+                        </div>
+                        <div class="h-100 d-inline-flex align-items-center py-2 px-2">
+                            <i class="fa fa-user-alt text-primary mr-2"></i>
+                            <small>Foydalanuvchi</small>
                         </div>
                     </div>
                     <div class="col-lg-5 text-right">

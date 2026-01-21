@@ -13,20 +13,22 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8">
-                        <div class="row mb-4">
-                            <a class="btn btn-sm btn-outline-dark mr-2"
-                                href="{{ route('posts.edit', ['post' => $post->id]) }}">
-                                O'zgartirish
-                            </a>
-                            <form action="{{ route('posts.destroy', ['post' => $post->id]) }}" method="POST"
-                                onsubmit="return confirm ('Rostdan ham bu postni o\'chirasizmi?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-outline-danger">
-                                    O'chirish
-                                </button>
-                            </form>
-                        </div>
+                        @auth
+                            <div class="row mb-4">
+                                <a class="btn btn-sm btn-outline-dark mr-2"
+                                    href="{{ route('posts.edit', ['post' => $post->id]) }}">
+                                    O'zgartirish
+                                </a>
+                                <form action="{{ route('posts.destroy', ['post' => $post->id]) }}" method="POST"
+                                    onsubmit="return confirm ('Rostdan ham bu postni o\'chirasizmi?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        O'chirish
+                                    </button>
+                                </form>
+                            </div>
+                        @endauth
                         <div class="mb-5">
                             <div class="d-flex mb-2">
                                 @foreach ($post->tags as $tag)
@@ -81,17 +83,25 @@
                                 <input type="url" class="form-control" id="website">
                             </div> --}}
 
-                            <form action="{{route('comments.store') }}" method="POST">
-                                @csrf
-                                <div class="form-group">
-                                    <label for="message">Xabar *</label>
-                                    <textarea name="body" cols="30" rows="5" class="form-control"></textarea>
+                            @auth
+                                <form action="{{route('comments.store') }}" method="POST">
+                                    @csrf
+                                    <div class="form-group">
+                                        <label for="message">Xabar *</label>
+                                        <textarea name="body" cols="30" rows="5" class="form-control"></textarea>
+                                    </div>
+                                    <input type="hidden" name="post_id" value="{{ $post->id }}">
+                                    <div class="form-group mb-0">
+                                        <input type="submit" value="Yuborish" class="btn btn-primary">
+                                    </div>
+                                </form>
+                            @else
+                                <div>Izoh qoldirish uchun
+                                    <a href="{{ route('login') }}"><b>Kiring !</b></a>
+                                    Yoki
+                                    <a href="{{ route('register') }}"><b>Ro'yhatdan o'ting !</b></a>
                                 </div>
-                                <input type="hidden" name="post_id" value="{{ $post->id }}">
-                                <div class="form-group mb-0">
-                                    <input type="submit" value="Yuborish" class="btn btn-primary">
-                                </div>
-                            </form>
+                            @endauth
                         </div>
                     </div>
 
@@ -99,7 +109,7 @@
                         <div class="d-flex flex-column text-center bg-secondary rounded mb-5 py-5 px-4">
                             <img src="/img/user.jpg" class="img-fluid rounded-circle mx-auto mb-3"
                                 style="width: 100px;">
-                            <h3 class="text-white mb-3">John Doe</h3>
+                            <h3 class="text-white mb-3">{{ $post->user->name }}</h3>
                             <p class="text-white m-0">Conset elitr erat vero dolor ipsum et diam, eos dolor lorem ipsum,
                                 ipsum
                                 ipsum sit no ut est. Guber ea ipsum erat kasd amet est elitr ea sit.</p>
@@ -122,7 +132,8 @@
                                     <li class="mb-1 py-2 px-3 bg-light d-flex justify-content-between align-items-center">
                                         <a class="text-dark" href="#"><i
                                                 class="fa fa-angle-right text-secondary mr-2"></i>{{$category->name}}</a>
-                                        <span class="badge badge-primary badge-pill">{{ $category->posts()->count() }}</span>
+                                        <span
+                                            class="badge badge-primary badge-pill">{{ $category->posts()->count() }}</span>
                                     </li>
                                 @endforeach
                             </ul>
