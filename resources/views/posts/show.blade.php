@@ -14,20 +14,22 @@
                 <div class="row">
                     <div class="col-lg-8">
                         @auth
-                            <div class="row mb-4">
-                                <a class="btn btn-sm btn-outline-dark mr-2"
-                                    href="{{ route('posts.edit', ['post' => $post->id]) }}">
-                                    O'zgartirish
-                                </a>
-                                <form action="{{ route('posts.destroy', ['post' => $post->id]) }}" method="POST"
-                                    onsubmit="return confirm ('Rostdan ham bu postni o\'chirasizmi?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-outline-danger">
-                                        O'chirish
-                                    </button>
-                                </form>
-                            </div>
+                            @canany(['update', 'delete'], $post)
+                                <div class="row mb-4">
+                                    <a class="btn btn-sm btn-outline-dark mr-2"
+                                        href="{{ route('posts.edit', ['post' => $post->id]) }}">
+                                        O'zgartirish
+                                    </a>
+                                    <form action="{{ route('posts.destroy', ['post' => $post->id]) }}" method="POST"
+                                        onsubmit="return confirm ('Rostdan ham bu postni o\'chirasizmi?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            O'chirish
+                                        </button>
+                                    </form>
+                                </div>
+                            @endcanany
                         @endauth
                         <div class="mb-5">
                             <div class="d-flex mb-2">

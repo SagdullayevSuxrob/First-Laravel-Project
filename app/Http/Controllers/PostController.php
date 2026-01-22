@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PostCreated;
+use App\Jobs\Change;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StorePostRequest;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Category;
 use App\Models\Tag; 
@@ -15,6 +18,8 @@ class PostController extends Controller
     public function __construct()
     {
         $this->middleware('auth')->except(['index', 'show']);
+        $this->authorizeResource(Post::class, 'post');
+        // $this->middleware('password.confirm')->only('edit');
     }
 
     public function index()
@@ -58,6 +63,10 @@ class PostController extends Controller
             }
         }
 
+        PostCreated::dispatch($post);
+
+        ChangePost::dispatch($post);
+
         return redirect()->route('posts.index');
     }
 
@@ -73,11 +82,22 @@ class PostController extends Controller
 
     public function edit(Post $post)
     {
+        /* if (! Gate::allows('update-post', $post)) {
+            abort(403);
+        } */
+
+        // Gate::authorize('update', $post);
+        // $this->authorize('update', $post);
+        // Gate::authorize('update-post', $post);
+
         return view('posts.edit')->with(['post' => $post]);
     }
 
     public function update(StorePostRequest $request, Post $post)
     {
+        // Gate::authorize('update', $post);
+        // Gate::authorize('update-post', $post);
+
         if ($request->hasFile('photo')) {
             if (isset($post->photo)) {
                 Storage::delete($post->photo);
@@ -100,6 +120,8 @@ class PostController extends Controller
 
     public function destroy(Post $post)
     {
+        // Gate::authorize('delete', $post);
+
         if (isset($post->photo)) {
             Storage::delete($post->photo);
         }

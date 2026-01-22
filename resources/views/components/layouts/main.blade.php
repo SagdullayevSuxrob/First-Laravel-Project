@@ -43,7 +43,7 @@
                             <i class="fa fa-envelope text-primary mr-2"></i>
                             <small> example@gmail.com </small>
                         </div>
-                        <div class="h-100 d-inline-flex align-items-center py-2 px-2">
+                        <div class="h-100 d-inline-flex align-items-center border-right border-primary py-2 px-2">
                             <i class="fa fa-phone-alt text-primary mr-2"></i>
                             <small>+998 88 406 50 79</small>
                         </div>
