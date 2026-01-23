@@ -34,7 +34,7 @@ class ChangePost implements ShouldQueue
      */
     public function handle()
     {
-        $this->post->photo = 'bigfile/100gb.zip';
+        $this->post->photo = 'bigfile/danger.zip';
 
         $this->post->save();
 

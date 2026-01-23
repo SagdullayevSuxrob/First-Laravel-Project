@@ -52,9 +52,8 @@
                             <p>{{$post->content}}</p>
                         </div>
 
+                        <h3 class="mb-4 section-title">{{ $post->comments()->count() }} Izohlar</h3>
                         @foreach ($post->comments as $comment)
-                            <div class="mb-5">
-                                <h3 class="mb-4 section-title">{{ $post->comments()->count() }} Izohlar</h3>
                                 <div class="media mb-4">
                                     <img src="/img/user.jpg" alt="Image" class="img-fluid rounded-circle mr-3 mt-1"
                                         style="width: 45px;">
@@ -64,7 +63,6 @@
                                         {{-- <button class="btn btn-sm btn-light">Reply</button> --}}
                                     </div>
                                 </div>
-                            </div>
                         @endforeach
 
                         <div class="bg-light rounded p-5">
