@@ -5,14 +5,21 @@ namespace App\Http\Controllers;
 use App\Events\PostCreated;
 use App\Jobs\Change;
 use App\Jobs\ChangePost;
+use App\Mail\MailPostCreated;
+use Cache;
+use Http;
 use Illuminate\Http\Request;
 use App\Models\Post;
+use App\Notifications\PostCreated as NotificationsPostCreated;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StorePostRequest;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Category;
-use App\Models\Tag; 
+use App\Models\Tag;
+use Mail;
 
 class PostController extends Controller
 {
@@ -25,9 +32,47 @@ class PostController extends Controller
 
     public function index()
     {
-        $posts = Post::latest()->paginate(12);
+        /* $posts = Post::cursor()->filter(function ($post) {
+            return $post->id > 50;
+        });
 
-        return view('posts.index')->with('posts', $posts);
+        $text = ' ';
+        foreach($posts as $post){
+            $text .= $post->id;
+        }
+
+        return $text;
+ */
+        // Post::all()->push(5)->chunk(10)->dd();
+
+        //         HTTP Client        \\
+        // $response =Http::post('https://daryo.uz');
+        // $response = Http::withoutVerifying()->get('https://daryo.uz/');
+        // dd($response);
+
+        //      LOG     \\
+        /*  $message = "Bu log qilinmoqdaa..."; 
+         Log::emergency($message);
+         Log::alert($message);
+         Log::critical($message);
+         Log::error($message);
+         Log::warning($message);
+         Log::notice($message);
+         Log::debug($message);
+         Log::info("Showing the user profile for user:" . 4); */
+
+        // Cache::pull('posts');
+        // $posts = Post::latest()->paginate(12);
+        // $posts = Post::latest()->get();
+
+        $page = request('page', 1); 
+
+        $posts = Cache::remember("posts_page_{$page}", 120, function () {
+            return Post::latest()->paginate(9);
+        });
+
+        return view('posts.index', compact('posts'));
+
 
     }
 
@@ -42,11 +87,11 @@ class PostController extends Controller
 
     public function store(StorePostRequest $request)
     {
-        // dd($request);
 
         if ($request->hasFile('photo')) {
-            $name = $request->file('photo')->getClientOriginalName();
-            $path = $request->file('photo')->storeAs('post-photos', $name);
+            $uploadFile = $request->file('photo');
+            $file_name = $uploadFile->hashName();
+            $path = $uploadFile->storeAs('public/src', $file_name);
         }
 
         $post = Post::create([
@@ -58,7 +103,7 @@ class PostController extends Controller
             'photo' => $path ?? null,
         ]);
 
-        if(isset($request->tags)){
+        if (isset($request->tags)) {
             foreach ($request->tags as $tag) {
                 $post->tags()->attach($tag);
             }
@@ -68,7 +113,11 @@ class PostController extends Controller
 
         ChangePost::dispatch($post);
 
-        return redirect()->route('posts.index');
+        Mail::to($request->user())->later(now()->addMilliseconds(60), (new \App\Mail\PostCreated($post))->onQueue('sending-mails'));
+
+        Notification::send(auth()->user(), new NotificationsPostCreated($post));
+
+        return redirect()->route('posts.index')->with('success', 'Post muvoffaqiyatli yaratildi.');
     }
 
     public function show(Post $post)

@@ -33,6 +33,6 @@ class UploadBigFile implements ShouldQueue
      */
     public function handle()
     {
-        Storage::putFile('big-files', $this->file, 'local');
+        Storage::putFile('big-files', $this->file);
     }
 }

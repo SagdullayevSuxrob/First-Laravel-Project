@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class PageController extends Controller
 {
     public function main()
     {
+        // session()->put('city', 'Tashkent');
+        // Session::put('key', 'default');
+        // dd(session()->all());
         return view('main');
     }
 

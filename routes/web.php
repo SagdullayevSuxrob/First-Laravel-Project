@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;     
 use App\Http\Controllers\PostController;
@@ -31,10 +33,18 @@ Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('register', [AuthController::class, 'register'])->name('register');
 Route::post('register', [AuthController::class, 'register_store'])->name('register.store');
 
+
+Route::middleware('auth')->group(function(){
+    Route::get('notifications/{notification}/read', [NotificationController::class, 'read'])->name('notifications.read');
+});
+
+Route::get('language/{locale}', [LanguageController::class, 'change_locale'])->name('locale.change');
+
 // Route::resource('posts', PostController::class);
 Route::resources([
     'posts' => PostController::class,
     'comments' => CommentController::class,
+    'notifications' => NotificationController::class,
 ]);
 /*Route::get('posts', [PostController::class, 'index'])->name('posts.index');
 Route::get('posts/{post}', [PostController::class, 'show'])->name('posts.show');
