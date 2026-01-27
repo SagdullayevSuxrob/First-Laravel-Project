@@ -6,6 +6,8 @@ use App\Events\PostCreated;
 use App\Jobs\Change;
 use App\Jobs\ChangePost;
 use App\Mail\MailPostCreated;
+use App\Models\Role;
+use App\Models\User;
 use Cache;
 use Http;
 use Illuminate\Http\Request;
@@ -26,12 +28,15 @@ class PostController extends Controller
     public function __construct()
     {
         $this->middleware('auth')->except(['index', 'show']);
-        $this->authorizeResource(Post::class, 'post');
+        // $this->authorizeResource(Post::class, 'post');
         // $this->middleware('password.confirm')->only('edit');
     }
 
     public function index()
     {
+        /* $user = User::first();
+        dd($user->name); */
+
         /* $posts = Post::cursor()->filter(function ($post) {
             return $post->id > 50;
         });
@@ -72,13 +77,13 @@ class PostController extends Controller
         });
 
         return view('posts.index', compact('posts'));
-
-
     }
 
 
     public function create()
     {
+        Gate::authorize('create-post', Role::where('name', 'blogger')->first());
+
         return view('posts.create')->with([
             'categories' => Category::all(),
             'tags' => Tag::all(),

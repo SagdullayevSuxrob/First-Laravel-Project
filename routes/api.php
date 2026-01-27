@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\PostApiController;
+use App\Http\Controllers\PostController;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -20,22 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('posts', function () {
+// Route::get('posts', [PostApiController::class, 'index']);
+// Route::get('posts/{post}', [PostApiController::class, 'show']);
 
-    // Cache::flush();
-    // Cache::flush();
-    /* $posts = Cache::remember('posts', 120, function () {
-        return Post::latest()->get();
-    }); */
-/* 
-    $posts = Post::all();
-
-    $allTitle = '';
-    foreach ($posts as $post){
-        $allTitle .= $post->title;
-    } */
-
-    Cache::put('title', $allTitle);
-
-    //return allTitle();
-});
+Route::apiResource('posts', PostApiController::class);
