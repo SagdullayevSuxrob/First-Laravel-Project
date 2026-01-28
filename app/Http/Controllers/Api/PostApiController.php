@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class PostApiController extends Controller
 {
@@ -13,6 +14,7 @@ class PostApiController extends Controller
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
+     * @return AnonymousResourceCollection
      */
     public function index()
     {
@@ -66,6 +68,7 @@ class PostApiController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
+     * @return void
      */
     public function update(Request $request, $id)
     {
@@ -77,6 +80,7 @@ class PostApiController extends Controller
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
+     * @return string
      */
     public function destroy(Post $post)
     {
