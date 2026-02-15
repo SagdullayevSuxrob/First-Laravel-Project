@@ -8,17 +8,36 @@
     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
         <div class="navbar-nav mr-auto py-0">
             <a href="/" class="nav-item nav-link active">{{ __('Bosh Sahifa') }}</a>
-            <a href="{{ route('about') }}" class="nav-item nav-link">{{ __('Biz haqimizda' )}}</a>
+            <a href="{{ route('about') }}" class="nav-item nav-link">{{ __('Biz haqimizda')}}</a>
             <a href="{{ route('services') }}" class="nav-item nav-link">{{ __('Xizmatlar')}}</a>
             <a href="{{ route('projects') }}" class="nav-item nav-link">{{ __('Portfolio')}}</a>
             <a href="{{ route('posts.index') }}" class="nav-item nav-link">{{ __('Blog')}}</a>
             <a href="{{ route('contact') }}" class="nav-item nav-link">{{ __('A\'loqa')}}</a>
         </div>
         @foreach ($all_locales as $locale)
-            <a href="{{ route('locale.change', ['locale' => $locale]) }}" class="btn btn-primary mr-3 d-none d-lg-block">
-                {{ $locale }}
-            </a>
+        <a href="{{ route('locale.change', ['locale' => $locale]) }}" class="btn btn-primary mr-3 d-none d-lg-block">
+            {{ $locale }}
+        </a>
         @endforeach
+        
+        {{-- <div class="dropdown d-none d-lg-block">
+            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                {{ app()->getLocale() }}
+            </button>
+
+            <ul class="dropdown-menu">
+                @foreach ($all_locales as $locale)
+                    @if ($locale !== app()->getLocale())
+                        <li>
+                            <a class="dropdown-item" href="{{ route('locale.change', ['locale' => $locale]) }}">
+                                {{ strtoupper($locale) }}
+                            </a>
+                        </li>
+                    @endif
+                @endforeach
+            </ul>
+        </div> --}}
+
         @auth
             <div class="mr-5">
                 <a href="{{ route('notifications.index') }}" class="btn btn-primary mr-5">

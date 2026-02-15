@@ -46,11 +46,11 @@
                             <h5 class="font-weight-medium mb-2">{{$post->title}}</h5>
                             <p class="mb-4">{{$post->short_content}}</p>
 
-                            @if (auth()->user()->hasRole('blogger'))
+                            {{-- @if (auth()->user()) --}}
                                 <a class="btn btn-sm btn-primary py-2" href="{{ route('posts.show', ['post' => $post->id]) }}">
                                     O'qish
                                 </a>
-                            @endif
+                            {{-- @endif --}}
                         </div>
                     @endforeach
 

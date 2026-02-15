@@ -26,11 +26,35 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
+
         if (Auth::attempt($credentials)) {
+
+            // 🔹 session yaratish (WEB uchun shart)
             $request->session()->regenerate();
 
-            return redirect()->intended('/');
+            $user = Auth::user();
+
+            // 🔹 Agar API bo‘lsa → token qaytar
+            if ($request->expectsJson()) {
+                $token = $user->createToken('auth_user')->plainTextToken;
+                return response()->json(['token' => $token]);
+            }
+
+            // 🔹 Agar brauzer bo‘lsa → sahifaga kiritsin
+            return redirect()->route('main'); // yoki posts.index
         }
+
+        return back()->withErrors([
+            'email' => 'Email yoki parol xato'
+        ]);
+
+        /*  if (Auth::attempt($credentials)) {
+             $user = User::query()->where('email', $request->email)->first();
+
+             $token = $user->createToken('auth_user')->plainTextToken;
+
+             return response()->json(['token' =>$token]);
+         } */
 
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
@@ -42,8 +66,7 @@ class AuthController extends Controller
         $validated = $request->validate([
             'name' => 'required',
             'email' => 'required|email:rfc,dns|unique:users,email',
-            'password' => 'required|min:8',
-            'password_confirmation' => 'required|same:password'
+            'password' => 'required|min:8|confirmed',
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
@@ -53,7 +76,7 @@ class AuthController extends Controller
 
         auth()->login($user);
 
-        return redirect('/')->with('success', "Account successfully registered");
+        return redirect()->route('main');
     }
 
     public function logout(Request $request)
